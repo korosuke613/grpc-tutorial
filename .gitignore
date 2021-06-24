@@ -17,7 +17,7 @@
 
 # generated files
 /deepthought.md
-/go
+/go/deepthought
 /server
 /client
 /index.html
