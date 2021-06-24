@@ -3,6 +3,7 @@ PROTOC_VERSION = 3.17.3
 PROTOC_GEN_DOC_VERSION = 1.4.1
 PROTOC_GEN_GO_VERSION = 1.26.0
 PROTOC_GEN_GO_GRPC_VERSION = 1.1.0
+PLATFORM = osx
 
 MODULE := $(shell awk '/^module / {print $$2}' go.mod)
 PWD := $(shell pwd)
@@ -37,14 +38,13 @@ fullclean: clean
 	rm -rf bin include go/deepthought
 
 $(PROTOC):
-	curl -fsL -o /tmp/protoc.zip https://github.com/protocolbuffers/protobuf/releases/download/v$(PROTOC_VERSION)/protoc-$(PROTOC_VERSION)-linux-x86_64.zip
+	curl -fsL -o /tmp/protoc.zip https://github.com/protocolbuffers/protobuf/releases/download/v$(PROTOC_VERSION)/protoc-$(PROTOC_VERSION)-$(PLATFORM)-x86_64.zip
 	unzip /tmp/protoc.zip 'bin/*' 'include/*'
 	rm -f /tmp/protoc.zip
 
 $(PROTOC_GEN_DOC):
 	mkdir -p bin
-	curl -fsL https://github.com/pseudomuto/protoc-gen-doc/releases/download/v$(PROTOC_GEN_DOC_VERSION)/protoc-gen-doc-$(PROTOC_GEN_DOC_VERSION).linux-amd64.go1.15.2.tar.gz | \
-	tar -C bin -x -z -f - --strip-components=1
+	GOBIN=$(PWD)/bin go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@v$(PROTOC_GEN_DOC_VERSION)
 
 $(PROTOC_GEN_GO):
 	mkdir -p bin
