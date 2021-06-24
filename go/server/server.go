@@ -10,7 +10,7 @@ import (
 	"github.com/ymmt2005/grpc-tutorial/go/deepthought"
 )
 
-// ComputeServer を実装する型
+// Server ComputeServer を実装する型
 type Server struct {
 	// 将来 proto ファイルに RPC が追加されてインタフェースが拡張された際、
 	// ビルドエラーになるのを防止する仕組み。

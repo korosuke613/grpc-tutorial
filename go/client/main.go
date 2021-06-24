@@ -43,7 +43,19 @@ func subMain() error {
 	// また RPC クライアントのメソッドも複数同時に呼び出し可能です。
 	// see https://github.com/grpc/grpc-go/blob/master/Documentation/concurrency.md
 	cc := deepthought.NewComputeClient(conn)
+	err = callBoot(cc)
+	if err != nil {
+		return err
+	}
+	err = callInfer(cc)
+	if err != nil {
+		return err
+	}
 
+	return nil
+}
+
+func callBoot(cc deepthought.ComputeClient) error {
 	// Boot を 2.5 秒後にクライアントからキャンセルするコード
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(cancel func()) {
@@ -77,17 +89,25 @@ func subMain() error {
 		fmt.Printf("Boot: %s\n", resp.Message)
 	}
 
-	// Boot を 2.5 秒後にクライアントからキャンセルするコード
-	ctx, cancel = context.WithCancel(context.Background())
+	return nil
+}
+
+func callInfer(cc deepthought.ComputeClient) error {
+	// Infer を 2.5 秒後にクライアントからキャンセルするコード
+	ctx, cancel := context.WithCancel(context.Background())
 	go func(cancel func()) {
 		time.Sleep(2500 * time.Millisecond)
 		cancel()
 	}(cancel)
 
-	in, err := cc.Infer(ctx, &deepthought.InferRequest{Query: "Life"})
+	// 自動生成された Infer RPC 呼び出しコードを実行
+	in, err := cc.Infer(ctx, &deepthought.InferRequest{
+		Query: "Life",
+	})
 	if err != nil {
 		return err
 	}
+
 	fmt.Printf("Infer: %d\n", in.Answer)
 
 	return nil
