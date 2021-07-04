@@ -29,7 +29,7 @@ func (s *Server) Boot(req *deepthought.BootRequest, stream deepthought.Compute_B
 		case <-stream.Context().Done():
 			return nil
 			// そうでなければ 1 秒待機してデータを送信
-		case <-time.After(1 * time.Second):
+		case <-time.After(60 * time.Second):
 		}
 
 		if err := stream.Send(&deepthought.BootResponse{
