@@ -3,11 +3,14 @@ package deepthought;
 option go_package = "github.com/ymmt2005/grpc-tutorial/go/deepthought";
 option java_package = "io.github.ymmt2005.grpc_tutorial.deepthought";
 
+import "google/protobuf/timestamp.proto";
+
 message BootRequest {
   bool silent = 1;
 }
 message BootResponse {
   string message = 1;
+  google.protobuf.Timestamp ts = 2;
 }
 
 message InferRequest {
