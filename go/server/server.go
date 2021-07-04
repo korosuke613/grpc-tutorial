@@ -57,7 +57,7 @@ func (s *Server) Infer(ctx context.Context, req *deepthought.InferRequest) (*dee
 		time.Sleep(750 * time.Millisecond)
 		return &deepthought.InferResponse{
 			Answer:      42,
-			Description: []string{"I checked it"},
+			// Description: []string{"I checked it"},
 		}, nil
 	}
 
