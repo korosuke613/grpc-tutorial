@@ -49,7 +49,7 @@ func subMain() error {
 	// また RPC クライアントのメソッドも複数同時に呼び出し可能です。
 	// see https://github.com/grpc/grpc-go/blob/master/Documentation/concurrency.md
 	cc := deepthought.NewComputeClient(conn)
-	err = callBoot(cc)
+	err = callBoot(cc, 5*time.Second)
 	if err != nil {
 		return err
 	}
@@ -61,11 +61,11 @@ func subMain() error {
 	return nil
 }
 
-func callBoot(cc deepthought.ComputeClient) error {
+func callBoot(cc deepthought.ComputeClient, d time.Duration) error {
 	// Boot を 5 秒後にクライアントからキャンセルするコード
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(cancel func()) {
-		time.Sleep(5 * time.Second)
+		time.Sleep(d)
 		cancel()
 	}(cancel)
 
