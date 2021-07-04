@@ -4,6 +4,7 @@ import (
 	"context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"time"
 
 	// protoc で自動生成されたパッケージ
@@ -33,6 +34,7 @@ func (s *Server) Boot(req *deepthought.BootRequest, stream deepthought.Compute_B
 
 		if err := stream.Send(&deepthought.BootResponse{
 			Message: "I THINK THEREFORE I AM.",
+			Ts: timestamppb.Now(),
 		}); err != nil {
 			return err
 		}

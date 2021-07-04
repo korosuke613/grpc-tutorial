@@ -86,7 +86,7 @@ func callBoot(cc deepthought.ComputeClient) error {
 			}
 			return fmt.Errorf("receiving boot response: %w", err)
 		}
-		fmt.Printf("Boot: %s\n", resp.Message)
+		fmt.Printf("Boot: %s, %s\n", resp.Message, resp.Ts.AsTime())
 	}
 
 	return nil
