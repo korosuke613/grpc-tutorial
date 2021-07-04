@@ -1,3 +1,20 @@
+# gRPC チュートリアル（平木場）
+
+## build
+
+### server
+```shell
+make server
+```
+
+### client
+```shell
+make client
+```
+
+以下は ymmt2005/grpc-tutorial の README.md の内容
+---
+
 # gRPC チュートリアル
 
 > 本資料は 2021 年にサイボウズ社内の研修用に作成したものです。
