@@ -34,7 +34,7 @@ func (s *Server) Boot(req *deepthought.BootRequest, stream deepthought.Compute_B
 
 		if err := stream.Send(&deepthought.BootResponse{
 			Message: "I THINK THEREFORE I AM.",
-			Ts: timestamppb.Now(),
+			Ts:      timestamppb.Now(),
 		}); err != nil {
 			return err
 		}
@@ -58,7 +58,7 @@ func (s *Server) Infer(ctx context.Context, req *deepthought.InferRequest) (*dee
 	if !ok || time.Until(deadline) > 750*time.Millisecond {
 		time.Sleep(750 * time.Millisecond)
 		return &deepthought.InferResponse{
-			Answer:      42,
+			Answer: 42,
 			// Description: []string{"I checked it"},
 		}, nil
 	}
