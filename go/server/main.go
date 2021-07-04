@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"google.golang.org/grpc/keepalive"
 	"net"
 	"os"
+	"time"
 
 	// protoc で自動生成されたパッケージ
 	"github.com/ymmt2005/grpc-tutorial/go/deepthought"
@@ -13,7 +15,11 @@ import (
 const portNumber = 13333
 
 func main() {
-	serv := grpc.NewServer()
+	kep := keepalive.EnforcementPolicy{
+		MinTime: 60 * time.Second,
+	}
+
+	serv := grpc.NewServer(grpc.KeepaliveEnforcementPolicy(kep))
 
 	// 実装した Server を登録
 	deepthought.RegisterComputeServer(serv, &Server{})

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"google.golang.org/grpc/keepalive"
 	"io"
 	"os"
 	"time"
@@ -29,9 +30,14 @@ func subMain() error {
 	// コマンドライン引数で渡されたアドレスに接続
 	addr := os.Args[1]
 
+	// see https://pkg.go.dev/google.golang.org/grpc/keepalive#ClientParameters
+	kp := keepalive.ClientParameters{
+		Time: 60 * time.Second,
+	}
+
 	// grpc.WithInsecure() を指定することで、TLS ではなく平文で接続
 	// 通信内容が保護できないし、不正なサーバーに接続しても検出できないので本当はダメ
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithKeepaliveParams(kp))
 	if err != nil {
 		return err
 	}
@@ -56,10 +62,10 @@ func subMain() error {
 }
 
 func callBoot(cc deepthought.ComputeClient) error {
-	// Boot を 2.5 秒後にクライアントからキャンセルするコード
+	// Boot を 5 秒後にクライアントからキャンセルするコード
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(cancel func()) {
-		time.Sleep(2500 * time.Millisecond)
+		time.Sleep(5 * time.Second)
 		cancel()
 	}(cancel)
 
