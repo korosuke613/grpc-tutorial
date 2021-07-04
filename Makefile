@@ -17,6 +17,10 @@ RUN_PROTOC = PATH=$(PWD)/bin:$$PATH $(PROTOC) -I$(PWD)/include -I.
 deepthought.md: deepthought.proto $(PROTOC) $(PROTOC_GEN_DOC)
 	$(RUN_PROTOC) --doc_out=. --doc_opt=markdown,$@ $<
 
+# generate html specification
+index.html: deepthought.proto $(PROTOC) $(PROTOC_GEN_DOC)
+	$(RUN_PROTOC) --doc_out=. $<
+
 go/deepthought/deepthought.pb.go: deepthought.proto $(PROTOC) $(PROTOC_GEN_GO)
 	$(RUN_PROTOC) --go_out=module=$(MODULE):. $<
 
