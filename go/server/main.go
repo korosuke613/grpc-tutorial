@@ -16,7 +16,7 @@ const portNumber = 13333
 
 func main() {
 	kep := keepalive.EnforcementPolicy{
-		MinTime: 2 * time.Second,
+		MinTime: 60 * time.Second,
 	}
 
 	serv := grpc.NewServer(grpc.KeepaliveEnforcementPolicy(kep))

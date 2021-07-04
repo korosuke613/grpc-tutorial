@@ -32,7 +32,7 @@ func subMain() error {
 
 	// see https://pkg.go.dev/google.golang.org/grpc/keepalive#ClientParameters
 	kp := keepalive.ClientParameters{
-		Time: 2 * time.Second,
+		Time: 60 * time.Second,
 	}
 
 	// grpc.WithInsecure() を指定することで、TLS ではなく平文で接続
@@ -62,10 +62,10 @@ func subMain() error {
 }
 
 func callBoot(cc deepthought.ComputeClient) error {
-	// Boot を 90 秒後にクライアントからキャンセルするコード
+	// Boot を 5 秒後にクライアントからキャンセルするコード
 	ctx, cancel := context.WithCancel(context.Background())
 	go func(cancel func()) {
-		time.Sleep(90000 * time.Millisecond)
+		time.Sleep(5 * time.Second)
 		cancel()
 	}(cancel)
 
