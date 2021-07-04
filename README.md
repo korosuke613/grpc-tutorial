@@ -1,4 +1,7 @@
 # gRPC チュートリアル（平木場）
+ymmt2005/grpc-tutorial の内容を進めるリポジトリです。
+
+[![CI](https://github.com/korosuke613/grpc-tutorial/actions/workflows/ci.yaml/badge.svg)](https://github.com/korosuke613/grpc-tutorial/actions/workflows/ci.yaml)
 
 ## build
 

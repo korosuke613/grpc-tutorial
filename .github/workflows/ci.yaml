@@ -1,0 +1,45 @@
+name: CI
+on: pull_request
+
+jobs:
+  fmt:
+    name: Check go fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.16'
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - run: |
+          make server PLATFORM=linux
+          make client PLATFORM=linux
+      - run: diff -u <(echo -n) <(go fmt ./...)
+
+  test:
+    name: Test go
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.16'
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - run: |
+          make server PLATFORM=linux
+          make client PLATFORM=linux
+      - run: go test ./... -v
