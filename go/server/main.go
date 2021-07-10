@@ -2,11 +2,15 @@ package main
 
 import (
 	"fmt"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/keepalive"
 	"net"
 	"os"
 	"time"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware"
 	// protoc で自動生成されたパッケージ
 	"github.com/ymmt2005/grpc-tutorial/go/deepthought"
 	"google.golang.org/grpc"
@@ -14,12 +18,42 @@ import (
 
 const portNumber = 13333
 
+func extractFields(fullMethod string, req interface{}) map[string]interface{} {
+	ret := make(map[string]interface{})
+
+	switch args := req.(type) {
+	case *deepthought.InferRequest:
+		ret["Query"] = args.Query
+	case *deepthought.BootRequest:
+		ret["Silent"] = args.Silent
+	default:
+		return nil
+	}
+
+	return ret
+}
+
 func main() {
 	kep := keepalive.EnforcementPolicy{
 		MinTime: 60 * time.Second,
 	}
 
-	serv := grpc.NewServer(grpc.KeepaliveEnforcementPolicy(kep))
+	log, _ := zap.NewProduction()
+	serv := grpc.NewServer(
+		grpc.KeepaliveEnforcementPolicy(kep),
+		grpc.StreamInterceptor(
+			grpc_middleware.ChainStreamServer(
+				grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(extractFields)),
+				grpc_zap.StreamServerInterceptor(log),
+			),
+		),
+		grpc.UnaryInterceptor(
+			grpc_middleware.ChainUnaryServer(
+				grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(extractFields)),
+				grpc_zap.UnaryServerInterceptor(log),
+			),
+		),
+	)
 
 	// 実装した Server を登録
 	deepthought.RegisterComputeServer(serv, &Server{})
